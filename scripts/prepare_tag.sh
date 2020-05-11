@@ -70,7 +70,7 @@ do
 done
 
 if [ "$choiceRelease" = "Yes" ]; then
-  git push "$newTag"
+  git push origin "$newTag"
 fi
 
 #git tag | xargs git tag -d
