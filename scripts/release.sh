@@ -1,3 +1,3 @@
 pwd
-echo "TEST will publish"
-#npm publish --access=public
+echo "Will publish to remote"
+npm publish --access=public

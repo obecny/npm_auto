@@ -38,6 +38,14 @@ jobs:
       - run:
           name: Run tests
           command: npm test
+  compile:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Prepare release
+          command: npm run compile
   deploy:
     <<: *defaults
     steps:
@@ -71,6 +79,7 @@ workflows:
             tags:
               only: /^v.*/
             branches:
+#              only: /master/
               ignore: /.*/
       - lint_test:
           requires:
@@ -79,12 +88,23 @@ workflows:
             tags:
               only: /^v.*/
             branches:
+#              only: /master/
               ignore: /.*/
-      - deploy:
+      - compile:
           requires:
             - lint_test
           filters:
             tags:
               only: /^v.*/
             branches:
+#              only: /master/
+              ignore: /.*/
+      - deploy:
+          requires:
+            - compile
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+#              only: /master/
               ignore: /.*/
