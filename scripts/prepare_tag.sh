@@ -6,22 +6,31 @@ if ! git diff-index --quiet HEAD --; then
   echo ""
   exit 0
 fi
+newTag="$1";
 
 echo  "Fetching tags ..."
-
 git fetch --tags
-lastTag=`git tag | grep -E '^v\d+.+' | tail -1`;
 
-if [ -z "$lastTag" ]; then
-  newTag="v0.1"
-  echo "No previous tag found, using default: $newTag";
+if [ -z "$1" ]; then
+  lastTag=`git tag | grep -E '^v\d+.+' | tail -1`;
+  if [ -z "$lastTag" ]; then
+    newTag="v0.1"
+    echo "No previous tag found, using default: $newTag";
+  else
+    version=`echo $lastTag | grep -Eo '\.{1}[0-9]+$'`;
+    oldVersion=`echo $lastTag | grep -Eo '[0-9]+$'`;
+    newVersion=".$(($oldVersion + 1))";
+    newTag="${lastTag/$version/$newVersion}"
+  fi
 else
-  version=`echo $lastTag | grep -Eo '\.{1}[0-9]+$'`;
-  oldVersion=`echo $lastTag | grep -Eo '[0-9]+$'`;
-  newVersion=".$(($oldVersion + 1))";
-  newTag="${lastTag/$version/$newVersion}"
+  existingTag=`git tag | grep -E "^$newTag$"`;
+  echo "tutaj $newTag -> $existingTag"
+  if [ ! -z "$existingTag" ]; then
+    echo "Tag \"$newTag\" already exists, please choose another"
+    exit;
+  fi
+  echo "Will use tag \"$newTag\" from input"
 fi
-#
 
 echo  "Checking npm version ..."
 checkNpm=`node "./scripts/check-npm.js"`;
