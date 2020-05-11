@@ -27,7 +27,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths: .
-  lint_&_test:
+  lint_test:
     <<: *defaults
     steps:
       - attach_workspace:
@@ -58,7 +58,7 @@ workflows:
           filters:
             branches:
               only: /.*/
-      - lint_&_test:
+      - lint_test:
           filters:
             branches:
               only: /.*/
