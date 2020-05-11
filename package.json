@@ -1,5 +1,5 @@
 {
-  "name": "npm_auto_release",
+  "name": "@obecny/npm_auto_release",
   "version": "0.1.0",
   "description": "Auto release to npm",
   "main": "build/src/index.js",
@@ -18,6 +18,8 @@
     "tdd": "npm run test -- --watch-extensions ts --watch",
     "example": "node example/index.js",
     "test": "nyc ts-mocha -p tsconfig.json test/**/*.test.ts",
+    "release": "./scripts/release.sh",
+    "unrelease": "npm unpublish -f",
     "watch": "tsc -w"
   },
   "keywords": [

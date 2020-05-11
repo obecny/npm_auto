@@ -48,7 +48,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
       - run:
           name: Publish package
-          command: npm publish
+          command: npm run release
 
 workflows:
   version: 2
@@ -64,30 +64,27 @@ workflows:
               only: /.*/
           requires:
             - checkout
-#  release:
-#    jobs:
-#      - checkout:
-#          filters:
-#            tags:
-#              only: /^v.*/
-#      - lint:
-#          requires:
-#            - checkout
-#          filters:
-#            tags:
-#              only: /^v.*/
-#      - test:
-#          requires:
-#            - checkout
-#          filters:
-#            tags:
-#              only: /^v.*/
-#      - deploy:
-#          requires:
-#            - lint
-#            - test
-#          filters:
-#            tags:
-#              only: /^v.*/
-#            branches:
-#              ignore: /.*/
+  release:
+    jobs:
+      - checkout:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - lint_test:
+          requires:
+            - checkout
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+      - deploy:
+          requires:
+            - lint_test
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
