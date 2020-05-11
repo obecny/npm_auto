@@ -1,6 +1,6 @@
 {
   "name": "@obecny/npm_auto_release",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Auto release to npm",
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",

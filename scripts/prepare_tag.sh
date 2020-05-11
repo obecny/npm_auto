@@ -7,6 +7,8 @@ if ! git diff-index --quiet HEAD --; then
   exit 0
 fi
 
+echo  "Fetching tags ..."
+
 git fetch --tags
 lastTag=`git tag | grep -E '^v\d+.+' | tail -1`;
 
@@ -21,10 +23,13 @@ else
 fi
 #
 
+echo  "Checking npm version ..."
 checkNpm=`node "./scripts/check-npm.js"`;
-if [ -z "$checkNpm" ];
-then
-  echo "This version has not been released yet, will create a tag $newTag";
+exitCode="$?"
+
+if [ "$exitCode" = "0" ]; then
+  echo "Current version to be released \"$checkNpm\" with tag \"$newTag"
+  echo "Do you want to create now a new tag with name \"$newTag\" ?"
 else
   echo "ERROR";
   echo "$checkNpm";
@@ -33,7 +38,6 @@ else
   exit;
 fi
 
-echo "All checks passed, do you want to create a new tag with name \"$newTag\" ?"
 echo "Please choose \"1\" to proceed"
 choices=("Yes" "No")
 select choice in ${choices[@]}
@@ -45,6 +49,19 @@ done
 if [ "$choice" = "Yes" ]; then
   git tag $newTag;
   echo "New tag \"$newTag\" created";
+fi
+
+echo "Do you want to push the \"$newTag tag to trigger automatic release now?"
+echo "Please choose \"1\" to proceed"
+choices=("Yes" "No")
+select choiceRelease in ${choices[@]}
+do
+    echo $choice
+    break
+done
+
+if [ "$choiceRelease" = "Yes" ]; then
+  git push "$newTag"
 fi
 
 #git tag | xargs git tag -d
