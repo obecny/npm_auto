@@ -27,7 +27,7 @@ jobs:
       - persist_to_workspace:
           root: ~/repo
           paths: .
-  test:
+  lint_&_test:
     <<: *defaults
     steps:
       - attach_workspace:
@@ -55,7 +55,13 @@ workflows:
   build:
     jobs:
       - checkout
-      - test:
+          filters:
+            branches:
+              only: /.*/
+      - lint_&_test:
+          filters:
+            branches:
+              only: /.*/
           requires:
             - checkout
 #  release:
